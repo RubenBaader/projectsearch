@@ -3,23 +3,30 @@
 <hr />
 
 <input [formControl]="searchControl" >
+<div>
+    <button (click)="currentPage = currentPage - 1" [disabled]="currentPage == 1">Previous</button>
+    <button (click)="currentPage = currentPage + 1" [disabled]="currentPage == totalPages">Next</button>
+</div>
 
 <hr />
 
 <!-- search output from filtered array -->
-<details *ngFor="let i of searchResult | slice:1:10" class="productBox" >
-    <summary> {{i.title}} </summary>
+<!-- <details *ngFor="let product of searchResult | slice:1:10" class="productBox" > -->
+<details *ngFor="let product of searchResult.slice((currentPage-1)*itemsPerPage, currentPage*itemsPerPage)" 
+    class="productBox" 
+    >
+    <summary> {{product.title}} </summary>
     <div class="productContent">
         <div>
-            <p> Brand: {{i.brand}} </p>
-            <p> Price: {{i.price}} </p>
-            <p> Productno.: {{i.productno}} </p>
-            <p> Color: {{i.color}} </p>
-            <p> Size: {{i.size}} </p>
+            <p> Brand: {{product.brand}} </p>
+            <p> Price: {{product.price}} </p>
+            <p> Productno.: {{product.productno}} </p>
+            <p> Color: {{product.color}} </p>
+            <p> Size: {{product.size}} </p>
         </div>
         <img src="./assets/circle-loading-gif.webp" class="productImg" alt="a placeholder image">
     </div>
 </details>
 
-
 <hr />
+

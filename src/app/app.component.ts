@@ -32,6 +32,13 @@ export class AppComponent implements OnInit {
     distinctUntilChanged()
   );
 
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 10;
+  get totalPages() {
+    return Math.ceil(this.searchResult.length / this.itemsPerPage);
+  }
+
   // inner method
   getProductsFromService = () => {
     return this.productGetter.getProductList(this.productGetter.productUrl)
@@ -56,11 +63,11 @@ export class AppComponent implements OnInit {
     // search$ handles the search input and starts the pipeline, storing the search term for later
     // exhaustMap with getProductList loads the products, ignoring any new search inputs from the input stream
     // switchmap cancels any current filtering if I change the search term - after the product list has loaded
-  // The pipe "pipes" data through itself, ensuring that the fast .filter method in filterProducts does not run before it has anything to filter.
+    // The pipe "pipes" data through itself, ensuring that the fast .filter method in filterProducts does not run before it has anything to filter.
   ngOnInit(): void {
     this.search$.pipe(
       exhaustMap(this.getProductList),
-      tap(x => {this.productList = x as Product[]; this.searchResult = [] }),
+      tap(x => {this.productList = x as Product[]; this.searchResult = []; this.currentPage = 1 }),
       switchMap(data => this.filterProducts(data as Product[], this.searchTerm)),
     ).subscribe(data => {
       this.searchResult.push(data);
@@ -71,4 +78,5 @@ export class AppComponent implements OnInit {
     // I would split search term and product.title into arrays.
     // Then I would create a double loop to compare each index and return the product for matching indexes
     // Ideally, I would then sort the resulting array by number of matches, to boost relevancy
+  
 }
